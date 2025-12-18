@@ -1,43 +1,40 @@
-print("Simple Password Manager!\n")
-def inp():
-    choice = input("Enter choice: ")
-    if(choice.isdigit()):
-        choice = int(choice)
-        if(1 <= choice <=4):
-            return choice
-        else:
-            print("Invalid input! Must be a number between 1 and 4.")
-            return inp()
-    print("Invalid input! Must be a valid option number.")
-    return inp()
+websites = {}
 
-dict={}
+print("Simple Password Manager!\n")
+
+
+def get_user_inp():
+    choice = input("Enter choice (1,2,3,4): ")
+    if choice in ["1", "2", "3", "4"]:
+        return int(choice)
+    return get_user_inp()
+
 
 def addPassword():
-    website=input("Enter website name:  ").lower()
-    username=input("Enter username: ")
-    password=input("Enter password: ")
-    dict[website]={"username":username,"password":password}
-    print("\nPassword successfully saved!\n")
+    website = input("\nEnter website name:  ").strip()
+    if website.lower() in websites:
+        return print(f"{website} already exists.\n")
+    password = input("Enter password: ")
+    websites[website] = password
+    return print("\nPassword successfully saved!\n")
+
 
 def getPassword():
-    name = input("Enter website name: ")
-    for key in dict:
-        if key==name:
-             return print(f"Password: {dict[name]['password']}\n")
-    print("Website does not exist.\n")
+    if not websites:
+        return print("No passwords stored.\n")
+    website = input("Enter website name: ").strip()
+    if website in websites:
+        return print(f"Password: {websites[website]}\n")
+    return print(f"{website} does not exist.\n")
 
 
 def listPassword():
-    if(len(dict)==0):
-        print("No passwords stored.")
-    for key,value in dict.items():
-        print(f"website: {key} , password: {value['password']}")
+    if not websites:
+        return print("No passwords stored.\n")
+    for website in websites:
+        print(f"website: {website} , password: {websites[website]}")
     print()
 
-def q():
-    print("Thank you for using Password Manager!")
-    exit()
 
 while True:
     print("1. Add a new password")
@@ -45,13 +42,15 @@ while True:
     print("3. List all passwords")
     print("4. Quit\n")
 
-    choice = inp()
+    choice = get_user_inp()
 
-    if choice==1:
-        addPassword()
-    elif choice==2:
-        getPassword()
-    elif choice==3:
-        listPassword()
-    else:
-        q()
+    match choice:
+        case 1:
+            addPassword()
+        case 2:
+            getPassword()
+        case 3:
+            listPassword()
+        case 4:
+            print("Thank you for using Password Manager!")
+            exit()
